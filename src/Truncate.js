@@ -11,7 +11,8 @@ export default class Truncate extends Component {
         ]),
         trimWhitespace: PropTypes.bool,
         width: PropTypes.number,
-        onTruncate: PropTypes.func
+        onTruncate: PropTypes.func,
+        breakAll: PropTypes.bool
     };
 
     static defaultProps = {
@@ -19,7 +20,8 @@ export default class Truncate extends Component {
         ellipsis: '…',
         lines: 1,
         trimWhitespace: false,
-        width: 0
+        width: 0,
+        breakAll: false
     };
 
     state = {};
@@ -186,7 +188,8 @@ export default class Truncate extends Component {
             props: {
                 lines: numLines,
                 ellipsis,
-                trimWhitespace
+                trimWhitespace,
+                breakAll
             },
             state: {
                 targetWidth
@@ -199,7 +202,8 @@ export default class Truncate extends Component {
 
         const lines = [];
         const text = innerText(elements.text);
-        const textLines = text.split('\n').map(line => line.split(' '));
+        const wordSeparator = breakAll ? '' : ' ';
+        const textLines = text.split('\n').map(line => line.split(wordSeparator));
         let didTruncate = true;
         const ellipsisWidth = this.ellipsisWidth(this.elements.ellipsis);
 
@@ -214,7 +218,7 @@ export default class Truncate extends Component {
                 continue;
             }
 
-            let resultLine = textWords.join(' ');
+            let resultLine = textWords.join(wordSeparator);
 
             if (measureWidth(resultLine) <= targetWidth) {
                 if (textLines.length === 1) {
@@ -228,7 +232,7 @@ export default class Truncate extends Component {
 
             if (line === numLines) {
                 // Binary search determining the longest possible line inluding truncate string
-                const textRest = textWords.join(' ');
+                const textRest = textWords.join(wordSeparator);
 
                 let lower = 0;
                 let upper = textRest.length - 1;
@@ -267,7 +271,7 @@ export default class Truncate extends Component {
                 while (lower <= upper) {
                     const middle = Math.floor((lower + upper) / 2);
 
-                    const testLine = textWords.slice(0, middle + 1).join(' ');
+                    const testLine = textWords.slice(0, middle + 1).join(wordSeparator);
 
                     if (measureWidth(testLine) <= targetWidth) {
                         lower = middle + 1;
@@ -283,7 +287,7 @@ export default class Truncate extends Component {
                     continue;
                 }
 
-                resultLine = textWords.slice(0, lower).join(' ');
+                resultLine = textWords.slice(0, lower).join(wordSeparator);
                 textLines[0].splice(0, lower);
             }
 
@@ -347,6 +351,7 @@ export default class Truncate extends Component {
 
         delete spanProps.onTruncate;
         delete spanProps.trimWhitespace;
+        delete spanProps.breakAll;
 
         return (
             <span {...spanProps} ref={(targetEl) => { this.elements.target = targetEl; }}>

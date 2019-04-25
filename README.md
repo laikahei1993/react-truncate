@@ -52,6 +52,7 @@ Hint: (Generally with React) if you want to preserve newlines from plain text, y
 | trimWhitespace | boolean | `false` | If `true`, whitespace will be removed from before the ellipsis (e.g. `words ...` will become `words...` instead) | |
 | width | number | `0` | If not `0`, the calculation of the content will be based on this number. | |
 | onTruncate | function | | Gets invoked on each render. Gets called with `true` when text got truncated and ellipsis was injected, and with `false` otherwise. | `isTruncated => isTruncated !== this.state.isTruncated && this.setState({ isTruncated })` |
+| breakAll | boolean | false | If `true`, lines will break at any place, not only on spaces (useful for example for truncating multiline URLs). | `<Truncate breakAll lines={3}>{longText}</Truncate>` |
 
 ## Known issues
 - Resize content when the **size** of **parent container changed** (use the `width` property or call `ref.onResize()`). See [issue](https://github.com/One-com/react-truncate/issues/49)
