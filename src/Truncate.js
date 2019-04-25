@@ -203,7 +203,7 @@ export default class Truncate extends Component {
         const lines = [];
         const text = innerText(elements.text);
         const wordSeparator = breakAll ? '' : ' ';
-        const textLines = text.split('\n').map(line => line.split(wordSeparator));
+        const textLines = text.split('\n').map(line => line ? line.split(wordSeparator) : [""]);
         let didTruncate = true;
         const ellipsisWidth = this.ellipsisWidth(this.elements.ellipsis);
 
